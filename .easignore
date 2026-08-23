@@ -1,0 +1,11 @@
+node_modules
+.expo
+.webdev
+.manus-logs
+dist
+web-build
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+*.log
+coverage
