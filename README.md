@@ -1,133 +1,388 @@
-# F3 Fitness — Backend
-
-Backend do aplicativo F3 Fitness: API em Node.js/TypeScript com tRPC, autenticação via Manus OAuth e persistência com Drizzle ORM sobre PostgreSQL.
-
-## Stack
-
-- **Runtime**: Node.js + TypeScript
-- **API**: Express + [tRPC](https://trpc.io/)
-- **ORM**: [Drizzle ORM](https://orm.drizzle.team/) (PostgreSQL)
-- **Autenticação**: Manus OAuth — sessão via JWT (`jose`) + cookie HTTP-only (web) ou Bearer token (mobile, armazenado com `expo-secure-store`)
-- **Senhas**: hash com `bcrypt`
-- **Validação**: `zod`
-- **Testes**: `vitest`
-
-## ⚠️ Dependência da plataforma Manus
-
-Este projeto foi construído sobre um template da plataforma [Manus](https://manus.im), e depende de serviços proprietários dela para funcionar completamente:
-
-- **Manus OAuth**: fluxo de login/autenticação de usuários
-- **Forge API**: proxy usado para storage (S3), LLM, geração de imagem e transcrição de voz
-
-Isso significa que **rodar o backend localmente com todas as funcionalidades exige credenciais de um app registrado na Manus** (`VITE_APP_ID`, `OAUTH_SERVER_URL`, `BUILT_IN_FORGE_API_KEY`, etc.). Sem essas credenciais, rotas públicas (`publicProcedure`) e a lógica de negócio geral funcionam, mas login, storage de arquivos, LLM e afins não vão funcionar.
-
-## Pré-requisitos
-
-- Node.js 18 ou superior
-- Uma instância PostgreSQL acessível (local ou remota)
-- npm
-- Um app registrado na plataforma Manus (para OAuth e Forge API) — necessário apenas se for testar autenticação/integrações
-
-## Instalação
-
-```bash
+F3 Fitness — Backend
+Backend do F3 Fitness, aplicativo mobile e web voltado para organização, acompanhamento e evolução de treinos.
+O backend fornece API, autenticação, gerenciamento de sessões e persistência de dados utilizando Node.js, TypeScript, Express, tRPC, PostgreSQL e Drizzle ORM.
+🚧 Status: MVP em desenvolvimento
+📌 Características
+API backend em Node.js + TypeScript
+Express como servidor HTTP
+tRPC para procedures e comunicação tipada
+PostgreSQL como banco de dados
+Drizzle ORM para modelagem e acesso ao banco
+Cadastro e login com e-mail e senha
+Hash de senhas utilizando bcrypt
+Sessões utilizando JWT
+Google OAuth em processo de validação
+Controle de usuários e permissões
+Health check da API
+Testes automatizados com Vitest
+Integração preparada para aplicativo React Native/Expo
+Build Android utilizando Expo Application Services (EAS)
+🏗️ Arquitetura
+F3 Fitness
+│
+├── 📱 Frontend
+│   ├── React Native
+│   ├── Expo
+│   ├── Expo Router
+│   ├── TypeScript
+│   └── NativeWind
+│
+├── ⚙️ Backend
+│   ├── Node.js
+│   ├── Express
+│   ├── tRPC
+│   ├── JWT
+│   └── bcrypt
+│
+├── 🗄️ Banco de dados
+│   ├── PostgreSQL
+│   └── Drizzle ORM
+│
+├── 🔐 Autenticação
+│   ├── E-mail/Senha
+│   └── Google OAuth
+│
+└── 🚀 Build
+    └── Expo Application Services (EAS)
+🛠️ Stack tecnológica
+Categoria
+Tecnologia
+Runtime
+Node.js
+Linguagem
+TypeScript
+API
+Express + tRPC
+ORM
+Drizzle ORM
+Banco
+PostgreSQL
+Autenticação
+JWT + bcrypt
+OAuth
+Google OAuth
+Validação
+TypeScript / validações do projeto
+Testes
+Vitest
+Mobile
+React Native + Expo
+Build
+EAS
+📂 Estrutura principal
+.
+├── app/                    # Telas e rotas do aplicativo
+├── assets/                 # Imagens, ícones e recursos
+├── components/             # Componentes reutilizáveis
+├── drizzle/                # Schema e configurações do banco
+├── hooks/                  # Hooks personalizados
+├── lib/                    # Funções e configurações do frontend
+├── server/                 # Backend e API
+│   ├── _core/              # Infraestrutura do servidor
+│   ├── routes/             # Rotas HTTP
+│   ├── db.ts               # Conexão e operações do banco
+│   └── routers.ts          # Routers tRPC
+├── shared/                 # Código compartilhado
+├── tests/                  # Testes automatizados
+├── app.config.ts           # Configuração do Expo
+├── eas.json                # Configuração do EAS
+├── package.json            # Dependências e scripts
+└── tsconfig.json           # Configuração TypeScript
+🔐 Autenticação
+E-mail e senha
+Usuário
+   ↓
+E-mail + senha
+   ↓
+Backend
+   ↓
+bcrypt
+   ↓
+PostgreSQL
+   ↓
+JWT
+   ↓
+Sessão autenticada
+As senhas não devem ser armazenadas em texto puro.
+Google OAuth
+Aplicativo
+   ↓
+Google OAuth
+   ↓
+Autorização
+   ↓
+Backend
+   ↓
+Identificação do usuário
+   ↓
+PostgreSQL
+   ↓
+Sessão F3 Fitness
+O Google OAuth está em processo de validação para utilização no ambiente mobile e posteriormente em produção.
+🗄️ Banco de dados
+O projeto utiliza PostgreSQL + Drizzle ORM.
+A tabela principal de usuários possui campos como:
+users
+├── id
+├── open_id
+├── name
+├── email
+├── password
+├── login_method
+├── role
+├── created_at
+├── updated_at
+└── last_signed_in
+O modelo será expandido conforme as funcionalidades de treino forem implementadas.
+Planejamento:
+users
+│
+├── workouts
+│   ├── exercises
+│   └── sets
+│
+├── progress
+├── measurements
+└── goals
+⚙️ Pré-requisitos
+Antes de executar o projeto, instale:
+Node.js
+npm
+PostgreSQL
+Git
+EAS CLI
+Para desenvolvimento Android:
+Android Studio
+Android SDK
+Java/JDK compatível com o ambiente Expo
+Development Build ou dispositivo Android
+🚀 Instalação
+Clone o repositório:
 git clone https://github.com/joaopedrosvr97-hub/APLICATIVO-Example-Fitness.git
+Entre no projeto:
 cd APLICATIVO-Example-Fitness
+Instale as dependências:
 npm install
-```
+Verifique o TypeScript:
+npm run check
+🔑 Variáveis de ambiente
+Crie os arquivos .env necessários conforme o ambiente.
+Exemplo:
+DATABASE_URL=postgresql://usuario:senha@localhost:5432/f3fitness
 
-## Configuração de ambiente
+JWT_SECRET=sua_chave_secreta
 
-Copie o arquivo de exemplo e preencha com seus valores reais:
+GOOGLE_CLIENT_ID=seu_google_client_id
+GOOGLE_CLIENT_SECRET=seu_google_client_secret
 
+OAUTH_SERVER_URL=http://localhost:3000
+⚠️ Nunca envie .env, senhas, tokens ou credenciais reais para o GitHub.
+Recomenda-se manter um .env.example contendo somente os nomes das variáveis.
+🗄️ PostgreSQL
+Crie o banco:
+CREATE DATABASE f3fitness;
+Configure:
+DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/f3fitness
+Depois execute as migrações/configurações do Drizzle conforme os scripts definidos no projeto.
+▶️ Executando
+Frontend
+npx expo start
+Backend
+npx tsx server/_core/index.ts
+Por padrão:
+http://localhost:3000
+Health check
+GET /api/health
+Resposta esperada:
+{
+  "ok": true
+}
+🧪 Testes
+Execute:
+npm test
+Verifique o TypeScript:
+npm run check
+Antes de um build:
+npm run check
+npm test
+📦 Build Android
+O projeto utiliza EAS Build.
+Login:
+eas login
+Informações do projeto:
+eas project:info
+Credenciais:
+eas credentials
+Development
+eas build --profile development --platform android
+Preview
+eas build --profile preview --platform android
+Production
+eas build --profile production --platform android
+A build de produção deve ocorrer somente após validação dos fluxos de autenticação, banco de dados, OAuth e funcionalidades principais.
+🔒 Segurança
+Práticas adotadas ou planejadas:
+Senhas armazenadas com hash bcrypt
+JWT para gerenciamento de sessão
+Variáveis sensíveis mantidas no ambiente
+PostgreSQL com constraints e índices
+Separação entre frontend e backend
+Próximas melhorias
+[ ] Rate limiting na autenticação
+[ ] Restrição de CORS por origem
+[ ] Validação rigorosa dos OAuth redirect URIs
+[ ] Maior proteção do fluxo OAuth mobile
+[ ] Rotação e gestão de tokens
+[ ] Auditoria de sessões
+[ ] Validação completa das entradas da API
+🧪 Status de QA
+O projeto ainda está em desenvolvimento e não deve ser considerado uma release de produção.
+Área
+Status
+Interface mobile
+🟢 Em desenvolvimento
+Interface Web
+🟢 Em desenvolvimento
+Backend
+🟢 Implementado
+PostgreSQL
+🟢 Implementado
+Drizzle ORM
+🟢 Implementado
+Login e cadastro
+🟢 Implementado
+Google OAuth
+🟡 Em validação
+Sessões JWT
+🟢 Implementado
+Testes automatizados
+🟡 Em expansão
+EAS Build
+🟡 Em validação
+Play Store
+🔴 Ainda não publicado
+Funcionalidades completas de treino
+🟡 Em desenvolvimento
+🗺️ Roadmap
+Fase 1 — Fundação
+[x] Estrutura inicial
+[x] React Native + Expo
+[x] TypeScript
+[x] Backend Node.js
+[x] PostgreSQL
+[x] Drizzle ORM
+[x] Autenticação local
+[x] Sistema de sessão
+[x] Configuração EAS
+Fase 2 — Autenticação
+[x] Cadastro
+[x] Login
+[x] Logout
+[x] Sessão persistente
+[ ] Finalizar Google OAuth mobile
+[ ] Testes completos de autenticação
+[ ] Hardening de segurança
+Fase 3 — Treinos
+[ ] Cadastro de exercícios
+[ ] Criação de treinos
+[ ] Edição de treinos
+[ ] Execução de treino
+[ ] Séries e repetições
+[ ] Carga utilizada
+[ ] Histórico de treinos
+Fase 4 — Evolução
+[ ] Dashboard
+[ ] Progresso
+[ ] Gráficos
+[ ] Medidas corporais
+[ ] Metas
+[ ] Histórico de evolução
+Fase 5 — Produção
+[ ] Testes completos
+[ ] Auditoria de segurança
+[ ] Build de produção
+[ ] Testes em dispositivos físicos
+[ ] Configuração Google Play Console
+[ ] Publicação na Play Store
+✏️ Como editar este README pelo painel do GitHub
+Você pode editar o README.md diretamente pelo navegador, sem precisar abrir o VS Code.
+Método 1 — Editar o README existente
+Abra o repositório no GitHub.
+Entre na página principal do projeto.
+Localize o arquivo README.md.
+Clique sobre README.md.
+Clique no ícone de lápis (Edit this file).
+Faça as alterações no editor Markdown.
+Role até Commit changes.
+Informe uma mensagem de commit objetiva.
+Escolha Commit directly to the main branch se estiver trabalhando diretamente na main, ou crie uma nova branch para revisão.
+Clique em Commit changes.
+Método 2 — Criar um README.md
+Caso o repositório ainda não possua README:
+Abra o repositório.
+Clique em Add file.
+Selecione Create new file.
+No nome do arquivo, coloque:
+README.md
+Cole o conteúdo deste arquivo.
+Revise a prévia em Preview.
+Vá até Commit changes.
+Adicione uma mensagem de commit.
+Confirme a criação do arquivo.
+Método 3 — Alterar pelo celular
+No aplicativo do GitHub ou pelo navegador:
+Abra o repositório.
+Acesse README.md.
+Se a interface oferecer a opção de edição, toque no lápis.
+Edite o Markdown.
+Revise as alterações.
+Faça o commit.
+A disponibilidade de algumas opções pode variar conforme a interface atual do GitHub, permissões do repositório e branch protegida.
+📝 Guia rápido de edição Markdown
+Títulos
+# Título principal
+
+## Seção
+
+### Subseção
+Negrito
+**texto em negrito**
+Lista
+- Item 1
+- Item 2
+- Item 3
+Checklist
+- [x] Concluído
+- [ ] Pendente
+Link
+[GitHub](https://github.com/)
+Código
+Inline:
+`npm install`
+Bloco:
 ```bash
-cp .env.example .env
-```
-
-Variáveis principais:
-
-| Variável | Descrição |
-|---|---|
-| `DATABASE_URL` | String de conexão PostgreSQL (`postgres://usuario:senha@host:5432/banco`) |
-| `JWT_SECRET` | Segredo usado para assinar os tokens de sessão. Gere um valor longo e aleatório. |
-| `TRPC_SECRET` | Segredo adicional usado pelo tRPC. Gere um valor longo e aleatório. |
-| `GOOGLE_CLIENT_SECRET` | Client secret do OAuth do Google, usado como provedor dentro do fluxo do Manus OAuth |
-| `VITE_APP_ID` | ID do app registrado na Manus (OAuth) |
-| `OAUTH_SERVER_URL` | URL do backend de OAuth da Manus |
-| `VITE_OAUTH_PORTAL_URL` | URL do portal de login da Manus |
-| `OWNER_OPEN_ID` | ID do owner do projeto na Manus |
-| `OWNER_NAME` | Nome de exibição do owner |
-| `BUILT_IN_FORGE_API_URL` | Endpoint da Forge API (Manus) |
-| `BUILT_IN_FORGE_API_KEY` | Chave de API da Forge (storage, LLM, imagem, transcrição) |
-
-> ⚠️ Nunca commit o arquivo `.env` com valores reais. Ele já está listado no `.gitignore`.
-
-## Banco de dados
-
-O projeto usa Drizzle ORM com PostgreSQL. Schema em `drizzle/schema.ts`.
-
-Para aplicar o schema ao banco configurado em `DATABASE_URL`:
-
-```bash
-npx drizzle-kit push
-```
-
-Para gerar uma nova migration a partir de alterações no schema:
-
-```bash
-npx drizzle-kit generate
-```
-
-## Rodando o servidor
-
-Desenvolvimento (com reload automático):
-
-```bash
-npm run dev
-```
-
-Build de produção:
-
-```bash
-npm run build
-npm start
-```
-
-> Confira os nomes exatos dos scripts no `package.json` — podem variar conforme a configuração do projeto.
-
-## Estrutura de pastas
-
-```
-server/
-  db.ts              ← Funções de acesso ao banco
-  routers.ts         ← Rotas/procedures do tRPC
-  storage.ts         ← Helpers de storage (Forge API)
-  _core/             ← Código de infraestrutura do template (evite modificar)
-drizzle/
-  schema.ts          ← Tabelas e tipos do banco
-  relations.ts       ← Relacionamentos entre tabelas
-  migrations/        ← Migrations geradas automaticamente
-shared/
-  types.ts           ← Tipos compartilhados
-  const.ts           ← Constantes compartilhadas
-```
-
-## Testes
-
-```bash
+npm install
 npm test
 ```
-
-Os testes usam `vitest` e cobrem rotas de autenticação (registro, login, validação de sessão, logout).
-
-## Segurança
-
-- Senhas são armazenadas apenas como hash (`bcrypt`), nunca em texto puro.
-- Sessões são JWTs assinados, verificados a cada requisição autenticada.
-- Rotas protegidas usam `protectedProcedure`; rotas públicas usam `publicProcedure`.
-- Nenhuma credencial deve ser commitada — use sempre variáveis de ambiente.
-- Se você suspeitar que alguma credencial foi exposta, revogue e gere uma nova imediatamente.
-
-## Licença
-
-Este projeto está licenciado sob a [GNU General Public License v3.0](LICENSE). Qualquer trabalho derivado ou distribuído também deve permanecer open source sob os mesmos termos.
+Tabela
+| Área | Status |
+|---|---|
+| Backend | 🟢 Implementado |
+| OAuth | 🟡 Em validação |
+🤝 Contribuição
+Crie uma branch:
+git checkout -b feature/minha-feature
+Valide as alterações:
+npm run check
+npm test
+Depois:
+git add .
+git commit -m "feat: adiciona minha feature"
+git push origin feature/minha-feature
+📄 Licença
+Este projeto está atualmente em desenvolvimento.
+A definição da licença de distribuição será realizada antes da publicação oficial do projeto.
+👨‍💻 Desenvolvimento
+F3 Fitness
+Projeto desenvolvido como aplicação full-stack utilizando React Native, Expo, Node.js e PostgreSQL.
+Status atual: 🚧 MVP em desenvolvimento
