@@ -1,7 +1,10 @@
-# F3 Fitness — Backend
+# APLICATIVO-Example-Fitness — Backend API
 
-Backend do aplicativo F3 Fitness: API em Node.js/TypeScript com tRPC, autenticação via Manus OAuth e persistência com Drizzle ORM sobre PostgreSQL.
+Backend robusto, modular e altamente escalável desenvolvido para servir como infraestrutura principal de **aplicativos mobile** (iOS/Android via React Native/Expo) e **plataformas web** focadas em saúde, treinos e acompanhamento fitness.
 
+A arquitetura foi projetada focando em comunicação *type-safe* end-to-end via **tRPC**, validação estrita de esquemas com **Zod**, persistência de dados performática com **Drizzle ORM + PostgreSQL** e autenticação segura com suporte a cookies HTTP-only (Web) e Bearer tokens em storage seguro (Mobile).
+
+---
 ## Stack
 
 - **Runtime**: Node.js + TypeScript
